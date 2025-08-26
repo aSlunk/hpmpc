@@ -393,14 +393,14 @@ void finalize_(std::string* ips)
         preprocessed_outputs_bool = new DATATYPE* [1] { nullptr };
     if (preprocessed_outputs_arithmetic == nullptr)
         preprocessed_outputs_arithmetic = new DATATYPE* [1] { nullptr };
-    if (preprocessed_outputs_bool[0] == nullptr)
-    {
-        preprocessed_outputs_bool[0] = new DATATYPE[preprocessed_outputs_bool_index[0]];
-    }
-    if (preprocessed_outputs_arithmetic[0] == nullptr)
-    {
-        preprocessed_outputs_arithmetic[0] = new DATATYPE[preprocessed_outputs_arithmetic_index[0]];
-    }
+    // if (preprocessed_outputs_bool[0] == nullptr)
+    // {
+    //     preprocessed_outputs_bool[0] = new DATATYPE[preprocessed_outputs_bool_index[0]];
+    // }
+    // if (preprocessed_outputs_arithmetic[0] == nullptr)
+    // {
+    //     preprocessed_outputs_arithmetic[0] = new DATATYPE[preprocessed_outputs_arithmetic_index[0]];
+    // }
     preprocessed_outputs_bool_input_index[0] = 0;
     preprocessed_outputs_bool_index[0] = 0;
     preprocessed_outputs_arithmetic_input_index[0] = 0;
@@ -498,14 +498,14 @@ void finalize_(std::string* ips, receiver_args* ra, sender_args* sa)
         preprocessed_outputs_bool = new DATATYPE* [max_rec_rounds] { nullptr };
     if (preprocessed_outputs_arithmetic == nullptr)
         preprocessed_outputs_arithmetic = new DATATYPE* [max_rec_rounds] { nullptr };
-    if (preprocessed_outputs_bool[0] == nullptr)
-    {
-        preprocessed_outputs_bool[0] = new DATATYPE[preprocessed_outputs_bool_input_index[0]];
-    }
-    if (preprocessed_outputs_arithmetic[0] == nullptr)
-    {
-        preprocessed_outputs_arithmetic[0] = new DATATYPE[preprocessed_outputs_arithmetic_input_index[0]];
-    }
+    // if (preprocessed_outputs_bool[0] == nullptr)
+    // {
+    //     preprocessed_outputs_bool[0] = new DATATYPE[preprocessed_outputs_bool_input_index[0]];
+    // }
+    // if (preprocessed_outputs_arithmetic[0] == nullptr)
+    // {
+    //     preprocessed_outputs_arithmetic[0] = new DATATYPE[preprocessed_outputs_arithmetic_input_index[0]];
+    // }
     preprocessed_outputs_bool_input_index[0] = 0;
     preprocessed_outputs_bool_index[0] = 0;
     preprocessed_outputs_arithmetic_input_index[0] = 0;

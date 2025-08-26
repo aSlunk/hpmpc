@@ -45,7 +45,6 @@ DATATYPE getRandomVal(int link_id)
 {
 
 
-
 #if RANDOM_ALGORITHM == 0
     if (num_generated[link_id] > 63)
     {

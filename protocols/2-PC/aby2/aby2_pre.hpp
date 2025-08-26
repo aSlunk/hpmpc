@@ -444,20 +444,31 @@ class ABY2_PRE_Share
         Datatype* other_boolean_triple_b = new Datatype[boolean_triple_num[tid]];
         load_triple_file(other_arithmetic_triple_a, arithmetic_triple_num[tid], other_arithmetic_triple_b, arithmetic_triple_num[tid], other_boolean_triple_a, boolean_triple_num[tid], other_boolean_triple_b, boolean_triple_num[tid], std::to_string(1 - PARTY), "pre");
         delete_triple_file(std::to_string(1 - PARTY), "pre");
+        if(tid == 0)
+        {
+            std::cout << arithmetic_triple_a[0] << " " << arithmetic_triple_b[0] << std::endl;
+            std::cout << other_arithmetic_triple_a[0] << " " << other_arithmetic_triple_b[0] << std::endl;
+        }
         for (uint64_t i = 0; i < arithmetic_triple_num[tid]; i++)
         {
 #if PARTY == 0
             arithmetic_triple_c[i] = OP_SUB( OP_MULT(OP_ADD(arithmetic_triple_a[i], other_arithmetic_triple_a[i]), OP_ADD(arithmetic_triple_b[i], other_arithmetic_triple_b[i])), getRandomVal(PNEXT));
 #else 
-            arithmetic_triple_c[i] = getRandomVal(PSELF);
+            arithmetic_triple_c[i] = getRandomVal(PNEXT);
 #endif
 
+            std::cout << arithmetic_triple_a[i] << " " << arithmetic_triple_b[i] << " " << arithmetic_triple_c[i] << std::endl;
         }
         delete[] other_arithmetic_triple_a;
         delete[] other_arithmetic_triple_b;
         for (uint64_t i = 0; i < boolean_triple_num[tid]; i++)
         {
+#if PARTY == 0
             boolean_triple_c[i] = OP_XOR( OP_AND(OP_XOR(boolean_triple_a[i], other_boolean_triple_a[i]), OP_XOR(boolean_triple_b[i], other_boolean_triple_b[i])), getRandomVal(PNEXT));
+#else
+            boolean_triple_c[i] = getRandomVal(PNEXT);
+#endif
+            std::cout << boolean_triple_a[i] << " " << boolean_triple_b[i] << " " << boolean_triple_c[i] << std::endl;
         }
         delete[] other_boolean_triple_a;
         delete[] other_boolean_triple_b;
@@ -484,6 +495,8 @@ class ABY2_PRE_Share
         uint64_t arithmetic_triple_counter[num_rounds]{0};
         uint64_t boolean_triple_counter[num_rounds]{0};
         auto num_triples = arithmetic_triple_num[0] + boolean_triple_num[0] + num_output_shares;
+        preprocessed_outputs_bool[0] = boolean_triple_c;
+        preprocessed_outputs_arithmetic[0] = arithmetic_triple_c;
         preprocessed_outputs_bool[1] = new Datatype[preprocessed_outputs_bool_input_index[1]];
         preprocessed_outputs_arithmetic[1] = new Datatype[preprocessed_outputs_arithmetic_input_index[1]];
         preprocessed_outputs_arithmetic_input_index[1] = 0;
@@ -510,6 +523,7 @@ class ABY2_PRE_Share
                 {
                     auto lxly = receive_and_compute_lxly_share(OP_ADD );
                     lxly_a[0][arithmetic_triple_counter[0]++] = lxly;
+                    std::cout << "Received arithmetic lxly: " << lxly << std::endl;
                     break;
                 }
                 case CaseBit2A:
@@ -612,12 +626,12 @@ class ABY2_PRE_Share
             }
         }
         delete[] triple_type[0];
-        delete[] preprocessed_outputs_bool[0];
+        // delete[] preprocessed_outputs_bool[0];
         preprocessed_outputs_bool[0] = lxly_b[0];
         /* preprocessed_outputs_bool_index[0] = 0; */
         preprocessed_outputs_bool_input_index[0] = 0;
 
-        delete[] preprocessed_outputs_arithmetic[0];
+        // delete[] preprocessed_outputs_arithmetic[0];
         preprocessed_outputs_arithmetic[0] = lxly_a[0];
         /* preprocessed_outputs_arithmetic_index[0] = 0; */
         preprocessed_outputs_arithmetic_input_index[0] = 0;
