@@ -63,7 +63,7 @@ triple<Datatype> retrieveBooleanTriple()
 void storeArithmeticABTriple(const Datatype a, const Datatype b)
 {
     arithmetic_triple_a[arithmetic_triple_index] = a;
-#if AB2 != 1 || PARTY != 1
+#if AB2_TRIPLES != 1 || PARTY != 1
     arithmetic_triple_b[arithmetic_triple_index] = b; //B1 is not needed for the AB2 protocol
 #endif
     arithmetic_triple_index++;
@@ -73,7 +73,7 @@ template <typename Datatype>
 void storeBooleanABTriple(const Datatype a, const Datatype b)
 {
     boolean_triple_a[boolean_triple_index] = a;
-#if AB2 != 1 || PARTY != 1
+#if AB2_TRIPLES != 1 || PARTY != 1
     boolean_triple_b[boolean_triple_index] = b; //B1 is not needed for the AB2 protocol
 #endif
     boolean_triple_index++;
