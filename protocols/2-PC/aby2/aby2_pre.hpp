@@ -48,9 +48,11 @@ class ABY2_PRE_Share
     static Datatype receive_and_compute_lxly_share(func_add ADD, int num_round = 0)
     {
         if constexpr (std::is_same_v<func_add(), OP_XOR>)
-            return retrieve_output_share_bool(num_round);
+            // return retrieve_output_share_bool(num_round);
+            return boolean_triple_c[curr_boolean_triple_index++];
         else
-            return retrieve_output_share_arithmetic(num_round);
+            // return retrieve_output_share_arithmetic(num_round);
+            return arithmetic_triple_c[curr_arithmetic_triple_index++];
     }
 
 #endif
@@ -397,7 +399,7 @@ class ABY2_PRE_Share
     template <typename func_add, typename func_sub, typename func_mul>
     ABY2_PRE_Share prepare_mult3(ABY2_PRE_Share b, ABY2_PRE_Share c, func_add ADD, func_sub SUB, func_mul MULT) const
     {
-        ABY2_PRE_Share d = prepare_dot3(b, c, ADD);
+        ABY2_PRE_Share d = prepare_dot3(b, c, ADD, SUB, MULT);
         d.mask_and_send_dot(ADD, SUB);
         return d;
     }
@@ -416,7 +418,7 @@ class ABY2_PRE_Share
                                  func_sub SUB,
                                  func_mul MULT) const
     {
-        ABY2_PRE_Share e = prepare_dot4(b, c, d, ADD);
+        ABY2_PRE_Share e = prepare_dot4(b, c, d, ADD, SUB, MULT);
         e.mask_and_send_dot(ADD, SUB);
         return e;
     }
@@ -444,11 +446,6 @@ class ABY2_PRE_Share
         Datatype* other_boolean_triple_b = new Datatype[boolean_triple_num[tid]];
         load_triple_file(other_arithmetic_triple_a, arithmetic_triple_num[tid], other_arithmetic_triple_b, arithmetic_triple_num[tid], other_boolean_triple_a, boolean_triple_num[tid], other_boolean_triple_b, boolean_triple_num[tid], std::to_string(1 - PARTY), "pre");
         delete_triple_file(std::to_string(1 - PARTY), "pre");
-        if(tid == 0)
-        {
-            std::cout << arithmetic_triple_a[0] << " " << arithmetic_triple_b[0] << std::endl;
-            std::cout << other_arithmetic_triple_a[0] << " " << other_arithmetic_triple_b[0] << std::endl;
-        }
         for (uint64_t i = 0; i < arithmetic_triple_num[tid]; i++)
         {
 #if PARTY == 0
@@ -457,7 +454,6 @@ class ABY2_PRE_Share
             arithmetic_triple_c[i] = getRandomVal(PNEXT);
 #endif
 
-            std::cout << arithmetic_triple_a[i] << " " << arithmetic_triple_b[i] << " " << arithmetic_triple_c[i] << std::endl;
         }
         delete[] other_arithmetic_triple_a;
         delete[] other_arithmetic_triple_b;
@@ -468,7 +464,6 @@ class ABY2_PRE_Share
 #else
             boolean_triple_c[i] = getRandomVal(PNEXT);
 #endif
-            std::cout << boolean_triple_a[i] << " " << boolean_triple_b[i] << " " << boolean_triple_c[i] << std::endl;
         }
         delete[] other_boolean_triple_a;
         delete[] other_boolean_triple_b;
@@ -479,7 +474,7 @@ class ABY2_PRE_Share
                                        uint64_t* boolean_triple_num,
                                        uint64_t num_output_shares)
     {
-#if LX_TRIPLES == 1 && FAKE_TRIPLES == 1
+#if LX_TRIPLES == 1
         init_beaverC(0);
         get_triples_from_file(0, arithmetic_triple_num, boolean_triple_num);
         deinit_beaverAB();
@@ -495,8 +490,12 @@ class ABY2_PRE_Share
         uint64_t arithmetic_triple_counter[num_rounds]{0};
         uint64_t boolean_triple_counter[num_rounds]{0};
         auto num_triples = arithmetic_triple_num[0] + boolean_triple_num[0] + num_output_shares;
-        preprocessed_outputs_bool[0] = boolean_triple_c;
-        preprocessed_outputs_arithmetic[0] = arithmetic_triple_c;
+        curr_arithmetic_triple_index = 0;
+        curr_boolean_triple_index = 0;
+        arithmetic_triple_index = 0;
+        boolean_triple_index = 0;
+        // preprocessed_outputs_bool[0] = boolean_triple_c;
+        // preprocessed_outputs_arithmetic[0] = arithmetic_triple_c;
         preprocessed_outputs_bool[1] = new Datatype[preprocessed_outputs_bool_input_index[1]];
         preprocessed_outputs_arithmetic[1] = new Datatype[preprocessed_outputs_arithmetic_input_index[1]];
         preprocessed_outputs_arithmetic_input_index[1] = 0;
@@ -523,7 +522,6 @@ class ABY2_PRE_Share
                 {
                     auto lxly = receive_and_compute_lxly_share(OP_ADD );
                     lxly_a[0][arithmetic_triple_counter[0]++] = lxly;
-                    std::cout << "Received arithmetic lxly: " << lxly << std::endl;
                     break;
                 }
                 case CaseBit2A:
@@ -625,13 +623,15 @@ class ABY2_PRE_Share
                 }
             }
         }
+        arithmetic_triple_index = 0;
+        boolean_triple_index = 0;
         delete[] triple_type[0];
-        // delete[] preprocessed_outputs_bool[0];
+        delete[] preprocessed_outputs_bool[0];
         preprocessed_outputs_bool[0] = lxly_b[0];
         /* preprocessed_outputs_bool_index[0] = 0; */
-        preprocessed_outputs_bool_input_index[0] = 0;
+        // preprocessed_outputs_bool_input_index[0] = 0;
 
-        // delete[] preprocessed_outputs_arithmetic[0];
+        delete[] preprocessed_outputs_arithmetic[0];
         preprocessed_outputs_arithmetic[0] = lxly_a[0];
         /* preprocessed_outputs_arithmetic_index[0] = 0; */
         preprocessed_outputs_arithmetic_input_index[0] = 0;
@@ -644,19 +644,22 @@ class ABY2_PRE_Share
 
 
         communicate_pre();
-#if LX_TRIPLES == 1 && FAKE_TRIPLES == 1
+#if LX_TRIPLES == 1 
         deinit_beaverC();
         init_beaverC(1);
+#if FAKE_TRIPLES == 1
         get_triples_from_file(1, arithmetic_triple_num, boolean_triple_num);
-        deinit_beaverAB();
-#endif
-#if LX_TRIPLES == 1 && FAKE_TRIPLES == 0
+#else
         generate_beaver_triples(
                 {},{}, {}, arithmetic_triple_num[1], boolean_triple_num[1]);
+#endif
+        deinit_beaverAB();
 #endif
 
         lxly_a[1] = new Datatype[arithmetic_triple_num[1]];
         lxly_b[1] = new Datatype[boolean_triple_num[1]];
+        curr_arithmetic_triple_index = 0;
+        curr_boolean_triple_index = 0;
         num_triples = arithmetic_triple_num[1] + boolean_triple_num[1];
         for (uint64_t i = 0; i < num_triples; i++)
         {

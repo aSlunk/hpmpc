@@ -44,14 +44,14 @@ class ABY2_init
         if constexpr (std::is_same_v<func_add(), OP_XOR>)
         {
             num_boolean_triples[num_round]++;
-            store_output_share_bool_(num_round);
-            store_output_share_bool_(num_round);
+            // store_output_share_bool_(num_round);
+            // store_output_share_bool_(num_round);
         }
         else
         {
             num_arithmetic_triples[num_round]++;
-            store_output_share_arithmetic_(num_round);
-            store_output_share_arithmetic_(num_round);
+            // store_output_share_arithmetic_(num_round);
+            // store_output_share_arithmetic_(num_round);
         }
     }
 
@@ -276,7 +276,7 @@ class ABY2_init
     {
         for (int i = 0; i < BITLENGTH; i++)
         {
-            num_arithmetic_triples[0]++;
+            // num_arithmetic_triples[0]++;
             generate_lxly_triple(OP_ADD);
             send_to_(PNEXT);
         }
@@ -288,8 +288,8 @@ class ABY2_init
     {
         for (int i = 0; i < BITLENGTH; i++)
         {
-            num_arithmetic_triples[0]++;
-            num_arithmetic_triples[1]++;
+            // num_arithmetic_triples[0]++;
+            // num_arithmetic_triples[1]++;
             generate_lxly_triple(OP_ADD);
             store_output_share_arithmetic_(helper_index);
             store_output_share_arithmetic_(helper_index);

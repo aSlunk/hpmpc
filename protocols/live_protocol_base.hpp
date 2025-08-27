@@ -463,7 +463,6 @@ void store_output_share_bool(DATATYPE val, int index = 0)
 
 void store_output_share_arithmetic(DATATYPE val, int index = 0)
 {
-    std::cout << "Storing arithmetic output share: " << val << std::endl;
     preprocessed_outputs_arithmetic[index][preprocessed_outputs_arithmetic_input_index[index]] = val;
     preprocessed_outputs_arithmetic_input_index[index] += 1;
 }
@@ -483,8 +482,6 @@ DATATYPE retrieve_output_share_arithmetic(int index = 0)
     return SET_ALL_ZERO();
 #endif
     preprocessed_outputs_arithmetic_index[index] += 1;
-    std::cout << "index, preprocessed_outputs_arithmetic_index[index]: " << index << ", " << preprocessed_outputs_arithmetic_index[index] -1 << std::endl;
-    std::cout << "Retrieving arithmetic output share: " << preprocessed_outputs_arithmetic[index][preprocessed_outputs_arithmetic_index[index] - 1] << std::endl;
     return preprocessed_outputs_arithmetic[index][preprocessed_outputs_arithmetic_index[index] - 1];
 }
 

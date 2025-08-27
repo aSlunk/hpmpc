@@ -22,6 +22,8 @@ uint64_t total_boolean_triples_index = 0;
 /* uint8_t* triple_type; */
 uint64_t arithmetic_triple_index = 0;
 uint64_t boolean_triple_index = 0;
+uint64_t curr_arithmetic_triple_index = 0;
+uint64_t curr_boolean_triple_index = 0;
 DATATYPE* arithmetic_triple_a = nullptr;
 DATATYPE* arithmetic_triple_b = nullptr;
 DATATYPE* arithmetic_triple_c = nullptr;
