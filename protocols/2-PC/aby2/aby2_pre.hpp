@@ -476,7 +476,13 @@ class ABY2_PRE_Share
     {
 #if LX_TRIPLES == 1
         init_beaverC(0);
+#if FAKE_TRIPLES == 1
         get_triples_from_file(0, arithmetic_triple_num, boolean_triple_num);
+#else
+        std::string dummy_ips[2] = {"", ""};
+        generate_beaver_triples(
+                dummy_ips,{}, {}, arithmetic_triple_num[0], boolean_triple_num[0]):
+#endif
         deinit_beaverAB();
         init_beaverAB(1);
 #endif
@@ -500,11 +506,6 @@ class ABY2_PRE_Share
         preprocessed_outputs_arithmetic[1] = new Datatype[preprocessed_outputs_arithmetic_input_index[1]];
         preprocessed_outputs_arithmetic_input_index[1] = 0;
         preprocessed_outputs_bool_input_index[1] = 0;
-#if LX_TRIPLES == 1 && FAKE_TRIPLES == 0
-        std::string dummy_ips[2] = {"", ""};
-        generate_beaver_triples(
-        dummy_ips,{}, {}, arithmetic_triple_num[0], boolean_triple_num[0]);
-#endif
 
         for (uint64_t i = 0; i < num_triples; i++)
         {
@@ -651,7 +652,7 @@ class ABY2_PRE_Share
         get_triples_from_file(1, arithmetic_triple_num, boolean_triple_num);
 #else
         generate_beaver_triples(
-                {},{}, {}, arithmetic_triple_num[1], boolean_triple_num[1]);
+             dummy_ips,{}, {}, arithmetic_triple_num[1], boolean_triple_num[1]);
 #endif
         deinit_beaverAB();
 #endif

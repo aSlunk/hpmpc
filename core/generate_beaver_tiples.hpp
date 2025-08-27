@@ -42,32 +42,6 @@ void generateFakeArithmeticTriples(type a[],
                                    std::string ip,
                                    int port)
 {
-    num_triples /= DATTYPE / BITLENGTH;
-    for (uint64_t i = 0; i < num_triples; i++)
-    {
-/* #if num_players == 2 */
-#if FAKE_TRIPLES == 1
-        c[i] = SET_ALL_ZERO();
-#else
-#if PARTY == 0
-        a[i] = PROMOTE(3);
-        b[i] = PROMOTE(5);
-        c[i] = PROMOTE(34);
-#else
-        a[i] = PROMOTE(5);
-        b[i] = PROMOTE(2);
-        c[i] = PROMOTE(22);
-#endif
-#endif
-        /* #else */
-        /* a[i] = SET_ALL_ZERO(); */
-        /* b[i] = SET_ALL_ZERO(); */
-        /* c[i] = SET_ALL_ZERO(); */
-        /* a[i] = PROMOTE(2); */
-        /* b[i] = PROMOTE(3); */
-        /* c[i] = PROMOTE(24); */
-        /* #endif */
-    }
 }
 
 template <typename type>
@@ -79,25 +53,6 @@ void generateFakeBooleanTriples(type a[],
                                 std::string ip,
                                 int port)
 {
-    num_triples /= DATTYPE;
-    for (uint64_t i = 0; i < num_triples; i++)
-    {
-#if num_paties == 2 && FAKE_TRIPLES == 0
-#if PARTY == 0
-        a[i] = SET_ALL_ZERO();
-        b[i] = SET_ALL_ONE();
-        c[i] = SET_ALL_ZERO();
-#else
-        a[i] = SET_ALL_ONE();
-        b[i] = SET_ALL_ZERO();
-        c[i] = SET_ALL_ONE();
-#endif
-#else
-        a[i] = SET_ALL_ZERO();
-        b[i] = SET_ALL_ZERO();
-        c[i] = SET_ALL_ZERO();
-#endif
-    }
 }
 
 #endif
