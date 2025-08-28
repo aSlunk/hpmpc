@@ -29,7 +29,7 @@ printf("Datatype not supported \n");
 exit(1);
 #endif
 
-#if FUNCTION_IDENTIFIER != 2 && FUNCTION_IDENTIFIER != 412 && FUNCTION_IDENTIFIER != 413 && FUNCTION_IDENTIFIER != 414
+#if (PROTOCOL == 4) || (FUNCTION_IDENTIFIER != 2 && FUNCTION_IDENTIFIER != 412 && FUNCTION_IDENTIFIER != 413 && FUNCTION_IDENTIFIER != 414)
 // workaround to benchmark some functions easier
 
 void orthogonalize_arithmetic(UINT_TYPE* in, DATATYPE* out)

@@ -357,7 +357,7 @@ void real_ortho(UINT_TYPE data[])
     }
 }
 
-#if FUNCTION_IDENTIFIER != 2 && FUNCTION_IDENTIFIER != 412 && FUNCTION_IDENTIFIER != 413 && FUNCTION_IDENTIFIER != 414
+#if PROTOCOL == 4 || (FUNCTION_IDENTIFIER != 2 && FUNCTION_IDENTIFIER != 412 && FUNCTION_IDENTIFIER != 413 && FUNCTION_IDENTIFIER != 414)
 // workaround to benchmark some functions easier
 
 void orthogonalize_boolean(UINT_TYPE* data, DATATYPE* out)

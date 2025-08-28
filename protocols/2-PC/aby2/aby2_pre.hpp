@@ -481,7 +481,7 @@ class ABY2_PRE_Share
 #else
         std::string dummy_ips[2] = {"", ""};
         generate_beaver_triples(
-                dummy_ips,{}, {}, arithmetic_triple_num[0], boolean_triple_num[0]):
+                dummy_ips,{}, {}, arithmetic_triple_num[0], boolean_triple_num[0]);
 #endif
         deinit_beaverAB();
         init_beaverAB(1);
