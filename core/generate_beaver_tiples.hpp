@@ -53,18 +53,12 @@ void generateBooleanDummyTriples(type a[],
     bool* bool_a = new bool[num_triples];
     for(uint64_t i = 0; i < num_triples / (DATTYPE*bitlength); i++)
     {
-        UINT_TYPE temp[DATTYPE];
-        unorthogonalize_boolean(&a[i], temp);
-        for(uint64_t j = 0; j < DATTYPE*bitlength; j++)
-            bool_a[i*DATTYPE*bitlength + j] = (temp[j/DATTYPE] >> (j%DATTYPE)) & 1;
+        unorthogonalize_boolean(&a[i], (UINT_TYPE*)(&bool_a[i*DATTYPE*bitlength]));
     }
     bool* bool_b = new bool[num_triples];
     for(uint64_t i = 0; i < num_triples / (DATTYPE*bitlength); i++)
     {
-        UINT_TYPE temp[DATTYPE];
-        unorthogonalize_boolean(&b[i], temp);
-        for(uint64_t j = 0; j < DATTYPE*bitlength; j++)
-            bool_b[i*DATTYPE*bitlength + j] = (temp[j/DATTYPE] >> (j%DATTYPE)) & 1;
+        unorthogonalize_boolean(&b[i], (UINT_TYPE*)(&bool_b[i*DATTYPE*bitlength]));
     }
     bool* bool_c = new bool[num_triples];
 
@@ -76,10 +70,7 @@ void generateBooleanDummyTriples(type a[],
     // convert boolean triple to SIMD type
     for (uint64_t i = 0; i < num_triples / (DATTYPE*bitlength); i++)
     {
-        UINT_TYPE temp[DATTYPE] = {0};
-        for(uint64_t j = 0; j < DATTYPE*bitlength; j++)
-            temp[j/DATTYPE] |= (static_cast<UINT_TYPE>(bool_c[i*DATTYPE*bitlength + j]) << (j%DATTYPE));
-        orthogonalize_boolean(temp, &c[i]);
+        orthogonalize_boolean((UINT_TYPE*)(&bool_c[i*DATTYPE*bitlength]), &c[i]);
     }
 
 
