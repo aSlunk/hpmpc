@@ -23,15 +23,16 @@ void generateArithmeticDummyTriples(type a[],
     unorthogonalize_arithmetic(a, uint_a, num_triples / (DATTYPE / bitlength)); 
     UINT_TYPE* uint_b = new UINT_TYPE[num_triples];
     unorthogonalize_arithmetic(b, uint_b, num_triples / (DATTYPE / bitlength));
-    UINT_TYPE* uint_c = new UINT_TYPE[num_triples];
+    UINT_TYPE* uint_c = new UINT_TYPE[num_triples]; 
     
     for (uint64_t i = 0; i < num_triples; i++)
     {
        uint_c[i] = a[i] + b[i]; // dummy assignment, replace with actual triple generation
     }
+    
 
     // convert UINT triple to SIMD type
-    orthogonalize_arithmetic(uint_c, c, num_triples / (DATTYPE / bitlength));
+    orthogonalize_arithmetic(uint_c, c, (num_triples) / (DATTYPE / bitlength));
     delete[] uint_a;
     delete[] uint_b;
     delete[] uint_c;
@@ -51,16 +52,19 @@ void generateBooleanDummyTriples(type a[],
 {
     //convert SIMD variables to regular booleans
     bool* bool_a = new bool[num_triples];
+    UINT_TYPE* temp = (UINT_TYPE*) a;
     for(uint64_t i = 0; i < num_triples / (DATTYPE*bitlength); i++)
     {
-        unorthogonalize_boolean(&a[i], (UINT_TYPE*)(&bool_a[i*DATTYPE*bitlength]));
+        bool_a[i] = temp[i / bitlength] & (1 << (i % bitlength));
     }
     bool* bool_b = new bool[num_triples];
+    temp = (UINT_TYPE*) b;
     for(uint64_t i = 0; i < num_triples / (DATTYPE*bitlength); i++)
     {
-        unorthogonalize_boolean(&b[i], (UINT_TYPE*)(&bool_b[i*DATTYPE*bitlength]));
+        bool_b[i] = temp[i / bitlength] & (1 << (i % bitlength));
     }
-    bool* bool_c = new bool[num_triples];
+    uint64_t c_pad = (DATTYPE*bitlength) - (num_triples % (DATTYPE*bitlength));
+    bool* bool_c = new bool[num_triples + c_pad]; // padding to handle orthogonalization
 
     for (uint64_t i = 0; i < num_triples; i++)
     {
@@ -68,9 +72,18 @@ void generateBooleanDummyTriples(type a[],
     }
 
     // convert boolean triple to SIMD type
-    for (uint64_t i = 0; i < num_triples / (DATTYPE*bitlength); i++)
+    const int vectorization_factor = DATTYPE / bitlength; 
+    for (uint64_t i = 0; i < (num_triples + c_pad) / (bitlength); i++)
     {
-        orthogonalize_boolean((UINT_TYPE*)(&bool_c[i*DATTYPE*bitlength]), &c[i]);
+        temp = (UINT_TYPE*) c;
+        for (int j = 0; j < vectorization_factor; j++)
+        {
+            for (int k = 0; k < bitlength; k++)
+            {
+                temp[i * vectorization_factor + j] |= (bool_c[i * vectorization_factor * bitlength + j * bitlength + k] << k);
+            }
+        }
+
     }
 
 
