@@ -233,6 +233,7 @@ inline __m128i __mm_sla_epi64_wrapperF(__m128i a, int n)
 
 #define ALLOC(size) aligned_alloc(32, size * sizeof(__m128i))
 #define NEW(var) new (std::align_val_t(sizeof(__m128i))) var;
+#define DELETEARR(var) operator delete[] (var, std::align_val_t(sizeof(__m128i)))
 
 /* Orthogonalization stuffs */
 static uint64_t mask_l[6] = {0xaaaaaaaaaaaaaaaaUL,

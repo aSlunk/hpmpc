@@ -103,13 +103,13 @@ void init_beaverAB(int rounds)
     arithmetic_triple_b = new DATATYPE[num_arithmetic_triples[rounds] ];
     boolean_triple_a = new DATATYPE[num_boolean_triples[rounds] ];
     boolean_triple_b = new DATATYPE[num_boolean_triples[rounds] ];
-    std::cout << "Initialized beaver AB for round " << rounds << " with " << num_arithmetic_triples[rounds] << " arithmetic triples and " << num_boolean_triples[rounds] << " boolean triples." << std::endl;
+    std::cout << "Initialized beaver AB for round " << rounds << " with " << num_arithmetic_triples[rounds] * DATTYPE/BITLENGTH << " arithmetic triples and " << num_boolean_triples[rounds] * DATTYPE << " boolean triples." << std::endl;
 }
 void init_beaverC(int rounds)
 {
     arithmetic_triple_c = new DATATYPE[num_arithmetic_triples[rounds] ];
     boolean_triple_c = new DATATYPE[num_boolean_triples[rounds] ];
-    std::cout << "Initialized beaver C for round " << rounds << " with " << num_arithmetic_triples[rounds] << " arithmetic triples and " << num_boolean_triples[rounds] << " boolean triples." << std::endl;
+    std::cout << "Initialized beaver C for round " << rounds << " with " << num_arithmetic_triples[rounds] * DATTYPE/BITLENGTH << " arithmetic triples and " << num_boolean_triples[rounds] * DATTYPE << " boolean triples." << std::endl;
 }
 #else
 void init_beaver()
@@ -198,6 +198,6 @@ void print_num_triples()
               << "Arithmetic Beaver Triples Required: " << total_arithmetic_triples_num * DATTYPE / BITLENGTH
               << std::endl;
     std::cout << "P" << PARTY << ", PRE, PID" << process_offset << ": "
-              << "Boolean Beaver Triples Required: " << total_boolean_triples_num * DATTYPE / BITLENGTH << std::endl;
+              << "Boolean Beaver Triples Required: " << total_boolean_triples_num * DATTYPE << std::endl;
 #endif
 }

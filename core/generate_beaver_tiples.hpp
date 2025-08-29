@@ -17,25 +17,26 @@ void generateArithmeticDummyTriples(type a[],
                                     std::string ip,
                                     int port)
 {
+    if(num_triples == 0) return;
 
     //convert SIMD variables to regular uints
-    UINT_TYPE* uint_a = new UINT_TYPE[num_triples];
-    unorthogonalize_arithmetic(a, uint_a, num_triples / (DATTYPE / bitlength)); 
-    UINT_TYPE* uint_b = new UINT_TYPE[num_triples];
-    unorthogonalize_arithmetic(b, uint_b, num_triples / (DATTYPE / bitlength));
-    UINT_TYPE* uint_c = new UINT_TYPE[num_triples]; 
+    const int vectorization_factor = DATTYPE / bitlength; 
+    UINT_TYPE* uint_a = NEW(UINT_TYPE[num_triples]);
+    unorthogonalize_arithmetic(a, uint_a, num_triples / (vectorization_factor)); 
+    UINT_TYPE* uint_b = NEW(UINT_TYPE[num_triples]);
+    unorthogonalize_arithmetic(b, uint_b, num_triples / (vectorization_factor));
+    UINT_TYPE* uint_c = NEW(UINT_TYPE[num_triples]);
     
     for (uint64_t i = 0; i < num_triples; i++)
     {
        uint_c[i] = a[i] + b[i]; // dummy assignment, replace with actual triple generation
     }
     
-
     // convert UINT triple to SIMD type
-    orthogonalize_arithmetic(uint_c, c, (num_triples) / (DATTYPE / bitlength));
-    delete[] uint_a;
-    delete[] uint_b;
-    delete[] uint_c;
+    orthogonalize_arithmetic(uint_c, c, num_triples / (vectorization_factor));
+    DELETEARR(uint_a);
+    DELETEARR(uint_b);
+    DELETEARR(uint_c);
 }
 
 // Input: array of boolean triple shares [a], [b], [c] with size num_triples
@@ -50,46 +51,18 @@ void generateBooleanDummyTriples(type a[],
                                  std::string ip,
                                  int port)
 {
-    //convert SIMD variables to regular booleans
-    bool* bool_a = new bool[num_triples];
-    UINT_TYPE* temp = (UINT_TYPE*) a;
-    for(uint64_t i = 0; i < num_triples / (DATTYPE*bitlength); i++)
+    if(num_triples == 0) return;
+    std::cout << "Generating " << num_triples << " fake boolean triples." << std::endl;
+    //reinterpret SIMD bitstream as uint8 bitstream
+    uint8_t* uint_a = (uint8_t*) a;
+    uint8_t* uint_b = (uint8_t*) b;
+    uint8_t* uint_c = (uint8_t*) c;
+    
+    for (uint64_t i = 0; i < num_triples / 8; i++)
     {
-        bool_a[i] = temp[i / bitlength] & (1 << (i % bitlength));
-    }
-    bool* bool_b = new bool[num_triples];
-    temp = (UINT_TYPE*) b;
-    for(uint64_t i = 0; i < num_triples / (DATTYPE*bitlength); i++)
-    {
-        bool_b[i] = temp[i / bitlength] & (1 << (i % bitlength));
-    }
-    uint64_t c_pad = (DATTYPE*bitlength) - (num_triples % (DATTYPE*bitlength));
-    bool* bool_c = new bool[num_triples + c_pad]; // padding to handle orthogonalization
-
-    for (uint64_t i = 0; i < num_triples; i++)
-    {
-        bool_c[i] = bool_a[i] ^ bool_b[i]; // dummy assignment, replace with actual triple generation
+       uint_c[i] = uint_a[i] ^ uint_b[i]; // dummy assignment, replace with actual triple generation
     }
 
-    // convert boolean triple to SIMD type
-    const int vectorization_factor = DATTYPE / bitlength; 
-    for (uint64_t i = 0; i < (num_triples + c_pad) / (bitlength); i++)
-    {
-        temp = (UINT_TYPE*) c;
-        for (int j = 0; j < vectorization_factor; j++)
-        {
-            for (int k = 0; k < bitlength; k++)
-            {
-                temp[i * vectorization_factor + j] |= (bool_c[i * vectorization_factor * bitlength + j * bitlength + k] << k);
-            }
-        }
-
-    }
-
-
-    delete[] bool_a;
-    delete[] bool_b;
-    delete[] bool_c;
 }
 
 #else

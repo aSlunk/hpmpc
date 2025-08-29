@@ -28,3 +28,5 @@ build/
 CMake*
 #credentials
 machines.json
+#preprocessing
+*.pre

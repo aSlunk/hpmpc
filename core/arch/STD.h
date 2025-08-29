@@ -323,6 +323,7 @@ uint8_t logical_left_shift_8F(uint8_t value, int n)
 #define ALLOC(size) malloc(size * sizeof(uint64_t))
 /* #define NEW(var) (sizeof(var) > 0) ? new var : NULL */
 #define NEW(var) new var
+#define DELETEARR(var) delete[] (var)
 
 /* Orthogonalization stuffs */
 static uint64_t mask_l[6] = {0xaaaaaaaaaaaaaaaaUL,
